@@ -28,6 +28,7 @@ namespace Completed
 
         public int columns = 9;                                         //Number of columns in our game board.
         public int rows = 9;                                            //Number of rows in our game board.
+        public GameObject player;
         public GameObject[] floorTiles;                                 //Array of floor prefabs.
         public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
         public GameObject[] enemies;
@@ -119,6 +120,12 @@ namespace Completed
 
         }
 
+        void spawnplayer()
+        {
+            Vector3 playerpos = new Vector3(4f,0.4f,-1f);
+            Instantiate(player, playerpos, Quaternion.identity);
+        }
+
 
         //SetupScene initializes our level and calls the previous functions to lay out the game board
         public void SetupScene(int level)
@@ -132,6 +139,8 @@ namespace Completed
             InitialiseList();
 
             randomEnemies(enemies, totalenemies, totalenemies);
+
+            spawnplayer();
         }
     }
 }
