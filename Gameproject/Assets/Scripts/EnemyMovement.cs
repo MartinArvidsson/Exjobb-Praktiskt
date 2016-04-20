@@ -2,20 +2,30 @@
 using System.Collections;
 
 public class EnemyMovement : MonoBehaviour {
-    public float speed;
-    public float horizontalmovement;
-    public float verticalmovement;
+    private float horizontalmovement, verticalmovement;
+    public float minspeed,maxspeed,constantspeed;
     private Rigidbody rb;
-
-	// Use this for initialization
-	void Start () {
+    public Transform originalObject, reflectedObject;
+    // Use this for initialization
+    void Start () {
         rb = GetComponent<Rigidbody>();
-	}
+        horizontalmovement = Random.Range(minspeed, maxspeed);
+        verticalmovement = Random.Range(minspeed, maxspeed);
+        rb.velocity = new Vector3(horizontalmovement, 0.0f, verticalmovement);
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        Vector3 movement = new Vector3(horizontalmovement,0.0f,verticalmovement);
+        rb.velocity = constantspeed * (rb.velocity.normalized);
+    }
 
-        rb.AddForce(movement * speed);
-	}
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "Outer Wall")
+        {
+            //Debug.Log("hit");
+            Vector3 myCollisionNormal = collision.contacts[0].normal;
+            rb.velocity = Vector3.Reflect(rb.velocity, myCollisionNormal);
+        }
+    }
 }

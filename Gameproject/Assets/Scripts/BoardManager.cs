@@ -31,7 +31,7 @@ namespace Completed
         public GameObject[] floorTiles;                                 //Array of floor prefabs.
         public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
         public GameObject[] enemies;
-
+        public int totalenemies;
         private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
         private List<Vector3> gridPositions = new List<Vector3>();   //A list of possible locations to place tiles.
 
@@ -96,6 +96,7 @@ namespace Completed
 
             //Declare a variable of type Vector3 called randomPosition, set it's value to the entry at randomIndex from our List gridPositions.
             Vector3 randomPosition = gridPositions[randomIndex];
+            randomPosition.y = 1.25f;
 
             //Remove the entry at randomIndex from the list so that it can't be re-used.
             gridPositions.RemoveAt(randomIndex);
@@ -122,7 +123,6 @@ namespace Completed
         //SetupScene initializes our level and calls the previous functions to lay out the game board
         public void SetupScene(int level)
         {
-            int totalenemies = 3;
             //Level ska användas för att bestämma antalet bollar.
 
             //Creates the outer walls and floor.
