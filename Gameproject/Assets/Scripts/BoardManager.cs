@@ -6,8 +6,7 @@ using Random = UnityEngine.Random;      //Tells Random to use the Unity Engine r
 namespace Completed
 
 {
-
-    public class BoardManager : MonoBehaviour
+   public class BoardManager : MonoBehaviour
     {
         // Using Serializable allows us to embed a class with sub properties in the inspector.
         [Serializable]
@@ -15,7 +14,6 @@ namespace Completed
         {
             public int minimum;             //Minimum value for our Count class.
             public int maximum;             //Maximum value for our Count class.
-
 
             //Assignment constructor.
             public Count(int min, int max)
