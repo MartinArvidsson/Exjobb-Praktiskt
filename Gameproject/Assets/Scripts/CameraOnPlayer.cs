@@ -16,6 +16,6 @@ public class CameraOnPlayer : MonoBehaviour {
     {
         Vector3 playerInfo = player.transform.transform.position;
 
-        mainCamera.transform.position = new Vector3(playerInfo.x, 6f, playerInfo.z - cameraDistOffset);
+        mainCamera.transform.position = new Vector3(playerInfo.x, 12, playerInfo.z - cameraDistOffset);
     }
 }
