@@ -34,8 +34,10 @@ namespace Completed
         public GameObject[] enemies;
         public int totalenemies;
         private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
+        private Transform enemiesHolder;
+        private Transform buildingblocksHolder;
         private List<Vector3> gridPositions = new List<Vector3>();   //A list of possible locations to place tiles.
-
+        private GameObject instance;
 
         //Clears our list gridPositions and prepares it to generate a new board.
         void InitialiseList()
@@ -61,7 +63,7 @@ namespace Completed
         {
             //Instantiate Board and set boardHolder to its transform.
             boardHolder = new GameObject("Board").transform;
-            GameObject instance = new GameObject();
+            buildingblocksHolder = new GameObject("BuildingBlocks").transform;
             //Loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles.
             for (int x = -1; x < columns + 1; x++)
             {
@@ -108,6 +110,7 @@ namespace Completed
 
         void randomEnemies(GameObject[] enemiesarray, int minimum,int maximum)
         {
+            enemiesHolder = new GameObject("Enemies").transform;
             int numbertocreate = Random.Range(minimum, maximum);
 
             for (int i = 0; i < numbertocreate; i++)
@@ -115,7 +118,9 @@ namespace Completed
                 Vector3 randompos = randomplacement();
                 GameObject chosenememy = enemiesarray[Random.Range(0, enemiesarray.Length)];
 
-                Instantiate(chosenememy, randompos, Quaternion.identity);
+                instance = Instantiate(chosenememy, randompos, Quaternion.identity) as GameObject;
+
+                instance.transform.SetParent(enemiesHolder);
             }
 
         }

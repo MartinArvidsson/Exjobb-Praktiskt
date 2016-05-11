@@ -11,8 +11,11 @@ public class PlayerMovement : MonoBehaviour {
     CharacterController controller;
     public GameObject Outerwall;
     public GameObject BuildingWall;
+    private GameObject Board;
+    private GameObject BuildingBlocks;
+    private GameObject instance;
     private List<Transform> savedPositions = new List<Transform>();
-    private List<Object> savedBlocks = new List<Object>();
+    private List<GameObject> savedBlocks = new List<GameObject>();
     // Use this for initialization
     void Start () {
         controller = (CharacterController)GetComponent(typeof(CharacterController));
@@ -30,41 +33,45 @@ public class PlayerMovement : MonoBehaviour {
 
     void BuildWall()
     {
+        BuildingBlocks = GameObject.Find("BuildingBlocks");
         RaycastHit hit;
         Ray groundray = new Ray(new Vector3(transform.position.x, 2.2f, transform.position.z), Vector3.down);
         Debug.DrawRay(new Vector3(transform.position.x, 2.2f, transform.position.z), Vector3.down * raylength);
 
-        if(Physics.Raycast(groundray,out hit,raylength) && hit.transform.tag == "OuterWall")
+        if(Physics.Raycast(groundray,out hit,raylength) && hit.transform.tag == "Outer Wall")
         {
             savedPositions.Add(hit.transform);
         }
-
-        if (Physics.Raycast(groundray, out hit, raylength) && hit.transform.tag == "Floor")
+        else if (Physics.Raycast(groundray, out hit, raylength) && hit.transform.tag == "Floor")
         {
             GameObject toInstantiate = BuildingWall;
-            var blockclone = Instantiate(toInstantiate, new Vector3(hit.transform.position.x, 1.5f, hit.transform.position.z), Quaternion.identity);
-            Destroy(hit.transform.gameObject);
-            savedPositions.Add(toInstantiate.transform);
-            savedBlocks.Add(blockclone);
+            instance = Instantiate(toInstantiate, new Vector3(hit.transform.position.x, 1.5f, hit.transform.position.z), Quaternion.identity) as GameObject;            
+            savedPositions.Add(hit.transform);
+            instance.transform.SetParent(BuildingBlocks.transform);
+            savedBlocks.Add(instance);
+
         }
     }
     void FinishWall()
     {
+        Board = GameObject.Find("Board");
         var firstItem = savedPositions.First();
         var lastitem = savedPositions.Last();
-        if(firstItem.tag == "OuterWall" && lastitem.tag == "OuterWall")
+        if(firstItem.tag == "Outer Wall" && lastitem.tag == "Outer Wall")
         {
             if(firstItem.transform.position != lastitem.transform.position)
             {
                 foreach(Transform item in savedPositions)
                 {
-                    if(item != firstItem || item != lastitem)
+                    if(item.tag != "Outer Wall")
                     {
                         GameObject toInstantiate = Outerwall;
-                        Instantiate(toInstantiate, new Vector3(item.transform.position.x, 1.5f, item.transform.position.z), Quaternion.identity);   
+                        instance = Instantiate(toInstantiate, new Vector3(item.transform.position.x, 1.5f, item.transform.position.z), Quaternion.identity) as GameObject;
+                        instance.transform.SetParent(Board.transform);
+                        Destroy(item.transform.gameObject);
                     } 
                 }
-                foreach (Object _item in savedBlocks)
+                foreach (GameObject _item in savedBlocks)
                 {
                     Destroy(_item);
                 }
@@ -76,8 +83,8 @@ public class PlayerMovement : MonoBehaviour {
     float UpdateMovement()
     {
 
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        float x = Input.GetAxisRaw("Horizontal");
+        float z = Input.GetAxisRaw("Vertical");
 
         Vector3 inputVec = new Vector3(x, 0, z);
         inputVec *= speed;
