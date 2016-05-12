@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour {
     public float raylength;
     public int gravity = 0;
     CharacterController controller;
+
+
     public GameObject Outerwall;
     public GameObject BuildingWall;
     private GameObject Board;
@@ -35,8 +37,8 @@ public class PlayerMovement : MonoBehaviour {
     {
         BuildingBlocks = GameObject.Find("BuildingBlocks");
         RaycastHit hit;
-        Ray groundray = new Ray(new Vector3(transform.position.x, 2.2f, transform.position.z), Vector3.down);
-        Debug.DrawRay(new Vector3(transform.position.x, 2.2f, transform.position.z), Vector3.down * raylength);
+        Ray groundray = new Ray(new Vector3(transform.position.x, 2.05f, transform.position.z), Vector3.down);
+        Debug.DrawRay(new Vector3(transform.position.x, 2.05f, transform.position.z), Vector3.down * raylength);
 
         if(Physics.Raycast(groundray,out hit,raylength) && hit.transform.tag == "Outer Wall")
         {
@@ -69,6 +71,7 @@ public class PlayerMovement : MonoBehaviour {
                         instance = Instantiate(toInstantiate, new Vector3(item.transform.position.x, 1.5f, item.transform.position.z), Quaternion.identity) as GameObject;
                         instance.transform.SetParent(Board.transform);
                         Destroy(item.transform.gameObject);
+                        Scorescript.score += 1;
                     } 
                 }
                 foreach (GameObject _item in savedBlocks)
@@ -82,6 +85,7 @@ public class PlayerMovement : MonoBehaviour {
     }
     float UpdateMovement()
     {
+        Timerscript.timer -= Time.deltaTime;
 
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");

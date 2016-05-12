@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Completed;
 
 public class EnemyMovement : MonoBehaviour {
     private float horizontalmovement, verticalmovement;
     public float minspeed,maxspeed,constantspeed;
     private Rigidbody rb;
+    private bool invunerable;
     public Transform originalObject, reflectedObject;
     // Use this for initialization
     void Start () {
@@ -19,13 +21,26 @@ public class EnemyMovement : MonoBehaviour {
         rb.velocity = constantspeed * (rb.velocity.normalized);
     }
 
-    void OnCollisionEnter(Collision collision)
+    IEnumerator OnCollisionEnter(Collision collision)
     {
         if (collision.collider.tag == "Outer Wall")
         {
             //Debug.Log("hit");
             Vector3 myCollisionNormal = collision.contacts[0].normal;
             rb.velocity = Vector3.Reflect(rb.velocity, myCollisionNormal);
+        }
+        if(collision.collider.tag =="BuildingWall")
+        {
+            Vector3 myCollisionNormal = collision.contacts[0].normal;
+            rb.velocity = Vector3.Reflect(rb.velocity, myCollisionNormal);
+
+            if(!invunerable)
+            {
+                BoardManager.playerlifes -= 1;
+                invunerable = true;
+                yield return new WaitForSeconds(2);
+                invunerable = false;
+            }
         }
     }
 }

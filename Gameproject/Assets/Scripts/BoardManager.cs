@@ -24,20 +24,30 @@ namespace Completed
                 maximum = max;
             }
         }
-
+        public static int blockstoWin = 40;
+        public int lifetimer = 180;                                     //Time before the player dies, this will get divided by the current level
+                                                                        //to allow increasing difficulty.
 
         public int columns = 9;                                         //Number of columns in our game board.
         public int rows = 9;                                            //Number of rows in our game board.
-        public GameObject player;
+
+        public GameObject player;                                       //The player gameobject. in this case the droid.
         public GameObject[] floorTiles;                                 //Array of floor prefabs.
         public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
-        public GameObject[] enemies;
-        public int totalenemies;
+        public GameObject[] enemies;                                    //Array of different enemies.
+        public static int playerlifes = 3;                              //Playerlives is always equals to 3 when the game starts. by calling on it in different
+                                                                        //scripts we can decrease it's value when different triggers happends.
+                                                                        //When the lifetotal is = 0 the game will end.
+
+        public int totalenemies;                                        //Number of total enemies, will get multiplied by current level to
+                                                                        //Allow increasing difficulty.
+        
         private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
-        private Transform enemiesHolder;
-        private Transform buildingblocksHolder;
-        private List<Vector3> gridPositions = new List<Vector3>();   //A list of possible locations to place tiles.
-        private GameObject instance;
+        private Transform enemiesHolder;                                //A variable to store a reference to the transform of our Enemies object.
+        private Transform buildingblocksHolder;                         //A variable to store a reference to the transform of our Buoldingblocks object.
+        private List<Vector3> gridPositions = new List<Vector3>();      //A list of possible locations to place tiles.
+        private GameObject instance;                                    //The gameobject we use for instantiating new object and placing them as childs to
+                                                                        //Their respective holders
 
         //Clears our list gridPositions and prepares it to generate a new board.
         void InitialiseList()
@@ -135,7 +145,11 @@ namespace Completed
         //SetupScene initializes our level and calls the previous functions to lay out the game board
         public void SetupScene(int level)
         {
+            Timerscript.timer = lifetimer / level;
             //Level ska användas för att bestämma antalet bollar.
+
+
+            //TODO Blockstowin ska räknas ut här också..
 
             //Creates the outer walls and floor.
             BoardSetup();
