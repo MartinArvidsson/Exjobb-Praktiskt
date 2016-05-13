@@ -2,9 +2,10 @@
 using System.Collections;
 using UnityEngine.UI;
 using Completed;
+using UnityEngine.SceneManagement;
 
 public class GameLostscript : MonoBehaviour {
-
+    bool showGUI = false;
     Text gameovertext;
 
 
@@ -19,6 +20,26 @@ public class GameLostscript : MonoBehaviour {
     {
         if(BoardManager.playerlifes <= 0 || Timerscript.timer <= 0)
         {
+            PlayerLost();
+        }
+        //{
+        //    gameovertext.enabled = true;
+        //    gameovertext.text = "Game over, You lost";
+        //}
+        //else
+        //{
+        //    gameovertext.enabled = false;
+        //}
+    }
+
+    void PlayerLost()
+    {
+        StartCoroutine("RestartLevel");
+    }
+    void OnGUI()
+    {
+        if(showGUI == true)
+        {
             gameovertext.enabled = true;
             gameovertext.text = "Game over, You lost";
         }
@@ -26,5 +47,13 @@ public class GameLostscript : MonoBehaviour {
         {
             gameovertext.enabled = false;
         }
+    }
+    IEnumerator RestartLevel()
+    {
+        showGUI = true;
+        yield return new WaitForSeconds(3);
+        showGUI = false;
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 }
