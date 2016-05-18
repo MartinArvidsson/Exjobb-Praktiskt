@@ -9,23 +9,8 @@ namespace Completed
 
     public class BoardManager : MonoBehaviour
     {
-        // Using Serializable allows us to embed a class with sub properties in the inspector.
-        [Serializable]
-        public class Count
-        {
-            public int minimum;             //Minimum value for our Count class.
-            public int maximum;             //Maximum value for our Count class.
-
-
-            //Assignment constructor.
-            public Count(int min, int max)
-            {
-                minimum = min;
-                maximum = max;
-            }
-        }
-        public static int blockstoWin = 40;
-        public int lifetimer = 180;                                     //Time before the player dies, this will get divided by the current level
+        public static int blockstoWin = 20;
+        public static float lifetimer = 180;                                     //Time before the player dies, this will get divided by the current level
                                                                         //to allow increasing difficulty.
 
         public int columns = 9;                                         //Number of columns in our game board.
@@ -39,7 +24,7 @@ namespace Completed
                                                                         //scripts we can decrease it's value when different triggers happends.
                                                                         //When the lifetotal is = 0 the game will end.
 
-        public int totalenemies;                                        //Number of total enemies, will get multiplied by current level to
+        public static int totalenemies;                                        //Number of total enemies, will get multiplied by current level to
                                                                         //Allow increasing difficulty.
         
         private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
@@ -118,12 +103,11 @@ namespace Completed
             return randomPosition;
         }
 
-        void randomEnemies(GameObject[] enemiesarray, int minimum,int maximum)
+        void randomEnemies(GameObject[] enemiesarray, int totalenemies)
         {
             enemiesHolder = new GameObject("Enemies").transform;
-            int numbertocreate = Random.Range(minimum, maximum);
 
-            for (int i = 0; i < numbertocreate; i++)
+            for (int i = 0; i < totalenemies; i++)
             {
                 Vector3 randompos = randomplacement();
                 GameObject chosenememy = enemiesarray[Random.Range(0, enemiesarray.Length)];
@@ -143,13 +127,16 @@ namespace Completed
 
 
         //SetupScene initializes our level and calls the previous functions to lay out the game board
-        public void SetupScene(int level)
+        public void SetupScene(int level,bool restartedlevel)
         {
-            Timerscript.timer = lifetimer / level;
-            //Level ska användas för att bestämma antalet bollar.
+            if(restartedlevel == false)
+            {
+                lifetimer -= (level * 5);
 
+                totalenemies += level;
 
-            //TODO Blockstowin ska räknas ut här också..
+                blockstoWin += level;//Fungerar
+            }
 
             //Creates the outer walls and floor.
             BoardSetup();
@@ -157,7 +144,7 @@ namespace Completed
             //Reset our list of gridpositions.
             InitialiseList();
 
-            randomEnemies(enemies, totalenemies, totalenemies);
+            randomEnemies(enemies, totalenemies);
 
             spawnplayer();
         }

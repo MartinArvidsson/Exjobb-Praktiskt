@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using Completed;
 
 
 public class Timerscript : MonoBehaviour {
-    public static float timer;
     Text timerText;
 
 	// Use this for initialization
@@ -14,6 +14,6 @@ public class Timerscript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        timerText.text = string.Format("Time remaining: {0:N0}", timer);
+        timerText.text = string.Format("Time remaining: {0:N0}", BoardManager.lifetimer);
 	}
 }

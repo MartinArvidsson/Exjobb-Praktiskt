@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using Completed;
 
 public class Scorescript : MonoBehaviour {
 
@@ -16,6 +17,6 @@ public class Scorescript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        blockcounter.text = "Currently placed blocks : " + score;
+        blockcounter.text = "Currently placed blocks : " + score +" of "+ BoardManager.blockstoWin;
 	}
 }

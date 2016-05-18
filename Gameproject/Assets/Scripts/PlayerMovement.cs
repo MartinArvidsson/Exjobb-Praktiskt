@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Completed;
 
 public class PlayerMovement : MonoBehaviour {
     public float rotationDamping = 20f;
@@ -85,7 +86,7 @@ public class PlayerMovement : MonoBehaviour {
     }
     float UpdateMovement()
     {
-        Timerscript.timer -= Time.deltaTime;
+        BoardManager.lifetimer -= Time.deltaTime;
 
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
