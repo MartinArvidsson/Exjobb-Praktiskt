@@ -51,9 +51,9 @@ public class GameWonscript : MonoBehaviour {
         showGUI = true;
         yield return new WaitForSeconds(3);
         showGUI = false;
-        Scene scene = SceneManager.GetActiveScene();
-        GameManager.restartedLevel = false;
+        GameManager.instance.restartedLevel = false;
         GameManager.instance.level++;
+        Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
     }
 }

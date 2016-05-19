@@ -13,7 +13,6 @@ public class PlayerLifescript : MonoBehaviour {
     {
         playerlifes = GetComponent<Text>();
         BoardManager.playerlifes = 3;
-
     }
 
     // Update is called once per frame

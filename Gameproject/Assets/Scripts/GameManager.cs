@@ -7,10 +7,10 @@ namespace Completed
 
     public class GameManager : MonoBehaviour
     {
-        public static bool restartedLevel = false;
+        public bool restartedLevel = false;
         public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
         private BoardManager boardScript;                       //Store a reference to our BoardManager which will set up the level.
-        public int level = 1;
+        public int level;
         //Awake is always called before any Start functions
         void Awake()
         {
@@ -40,7 +40,7 @@ namespace Completed
         void InitGame()
         {
             //Call the SetupScene function of the BoardManager script, pass it current level number.
-            boardScript.SetupScene(level,restartedLevel);
+            boardScript.SetupScene(instance.level,instance.restartedLevel);
 
         }
     }

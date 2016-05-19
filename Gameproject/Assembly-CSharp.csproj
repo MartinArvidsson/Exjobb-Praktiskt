@@ -97,6 +97,7 @@
      <Compile Include="Assets\Scripts\PlayerMovement.cs" />
      <Compile Include="Assets\Scripts\Scorescript.cs" />
      <Compile Include="Assets\Scripts\Timerscript.cs" />
+     <Compile Include="Assets\Scripts\TotaltriesScript.cs" />
      <None Include="Assets\NAVI\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\NAVI\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\NAVI\Standard Assets\Effects\ImageEffects\Shaders\NoiseEffectShaderRGB.shader" />

@@ -16,10 +16,12 @@ namespace Completed
         public int columns = 9;                                         //Number of columns in our game board.
         public int rows = 9;                                            //Number of rows in our game board.
 
+        private int timerreduction;
         public GameObject player;                                       //The player gameobject. in this case the droid.
         public GameObject[] floorTiles;                                 //Array of floor prefabs.
         public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
         public GameObject[] enemies;                                    //Array of different enemies.
+        public static int remainingtries = 3;                           //Tries before the game quits.
         public static int playerlifes = 3;                              //Playerlives is always equals to 3 when the game starts. by calling on it in different
                                                                         //scripts we can decrease it's value when different triggers happends.
                                                                         //When the lifetotal is = 0 the game will end.
@@ -129,13 +131,14 @@ namespace Completed
         //SetupScene initializes our level and calls the previous functions to lay out the game board
         public void SetupScene(int level,bool restartedlevel)
         {
+            timerreduction -= level * 2;
             if(restartedlevel == false)
             {
-                lifetimer -= (level * 5);
+                lifetimer -= timerreduction;
 
-                totalenemies += level;
+                totalenemies += 2;
 
-                blockstoWin += level;//Fungerar
+                blockstoWin += 3;//Fungerar
             }
 
             //Creates the outer walls and floor.

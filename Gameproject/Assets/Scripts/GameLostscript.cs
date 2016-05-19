@@ -14,6 +14,7 @@ public class GameLostscript : MonoBehaviour {
     void Awake()
     {
         gameovertext = GetComponent<Text>();
+        //BoardManager.remainingtries = 3;
     }
 
     // Update is called once per frame
@@ -22,7 +23,16 @@ public class GameLostscript : MonoBehaviour {
         if(BoardManager.playerlifes <= 0 || BoardManager.lifetimer <= 0)
         {
             PlayerLost();
+            if (BoardManager.remainingtries <= 1)
+            {
+                GameOver();
+            }
         }
+    }
+
+    void GameOver()
+    {
+        StartCoroutine("Gameisover");
     }
 
     void PlayerLost()
@@ -35,7 +45,7 @@ public class GameLostscript : MonoBehaviour {
         if (showGUI == true)
         {
             gameovertext.enabled = true;
-            gameovertext.text = "You lost, restarting level: "+ GameManager.instance.level;
+            
             leveltransition.SetActive(true);
         }
         else
@@ -47,11 +57,22 @@ public class GameLostscript : MonoBehaviour {
 
     IEnumerator RestartLevel()
     {
+        gameovertext.text = "You lost, restarting level: " + GameManager.instance.level;
         showGUI = true;
         yield return new WaitForSeconds(3);
         showGUI = false;
+        BoardManager.remainingtries -= 1;
         Scene scene = SceneManager.GetActiveScene();
-        GameManager.restartedLevel = true;
+        GameManager.instance.restartedLevel = true;
         SceneManager.LoadScene(scene.name);
+    }
+
+    IEnumerator Gameisover()
+    {
+        gameovertext.text = "Game over. Exiting to Main Menu..";
+        showGUI = true;
+        yield return new WaitForSeconds(3);
+        showGUI = false;
+        SceneManager.LoadScene(0);
     }
 }
