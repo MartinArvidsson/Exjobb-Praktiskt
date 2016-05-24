@@ -88,10 +88,11 @@ public class PlayerMovement : MonoBehaviour {
     {
         BoardManager.lifetimer -= Time.deltaTime;
 
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
+        //float x = Input.GetAxisRaw("Horizontal");
+        //float z = Input.GetAxisRaw("Vertical");
 
-        Vector3 inputVec = new Vector3(x, 0, z);
+        //Vector3 inputVec = new Vector3(x, 0, z);
+        Vector3 inputVec = new Vector3(Input.acceleration.x, 0, -Input.acceleration.z);
         inputVec *= speed;
 
         controller.Move((inputVec + Vector3.up * -gravity + new Vector3(0, 0, 0)) * Time.deltaTime);

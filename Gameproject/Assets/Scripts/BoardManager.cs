@@ -21,6 +21,7 @@ namespace Completed
         public GameObject[] floorTiles;                                 //Array of floor prefabs.
         public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
         public GameObject[] enemies;                                    //Array of different enemies.
+        public GameObject[] inviswall;                                  //Invis wall to prevent player from running to far
         public static int remainingtries = 3;                           //Tries before the game quits.
         public static int playerlifes = 3;                              //Playerlives is always equals to 3 when the game starts. by calling on it in different
                                                                         //scripts we can decrease it's value when different triggers happends.
@@ -48,7 +49,7 @@ namespace Completed
                 //Within each column, loop through y axis (rows).
                 for (int y = 1; y < rows - 1; y++)
                 {
-                    //At each index add a new Vector3 to our list with the x and y coordinates of that position.
+                    //At each index add a new Vector3 to our list with the x and y coordinates of that position. Will be used for placing enemies.
                     gridPositions.Add(new Vector3(x, 1f,y));
                 }
             }
@@ -62,16 +63,22 @@ namespace Completed
             boardHolder = new GameObject("Board").transform;
             buildingblocksHolder = new GameObject("BuildingBlocks").transform;
             //Loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles.
-            for (int x = -1; x < columns + 1; x++)
+            for (int x = -2; x < columns + 1; x++)
             {
                 //Loop along y axis, starting from -1 to place floor or outerwall tiles.
-                for (int y = -1; y < rows + 1; y++)
+                for (int y = -2; y < rows + 1; y++)
                 {
                     //Choose a random tile from our array of floor tile prefabs and prepare to instantiate it.
                     GameObject toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
 
                     //Check if we current position is at board edge, if so choose a random outer wall prefab from our array of outer wall tiles.
-                    if (x == -1 || x == columns || y == -1 || y == rows)
+                    if (x == -2 || x == columns || y == -2 || y == rows)
+                    {
+                        toInstantiate = inviswall[Random.Range(0, inviswall.Length)];
+                        instance =
+                        Instantiate(toInstantiate, new Vector3(x, 2.5f, y), Quaternion.identity) as GameObject;
+                    }
+                    else if (x == -1 || x == columns - 1 || y == -1 || y == rows -1)
                     {
                         toInstantiate = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
                         instance =
