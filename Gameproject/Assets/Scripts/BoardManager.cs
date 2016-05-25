@@ -139,11 +139,10 @@ namespace Completed
         //SetupScene initializes our level and calls the previous functions to lay out the game board
         public void SetupScene(int level,bool restartedlevel)
         {
-            timerreduction -= level * 2;
+            //timerreduction -= level * 2;
             if(restartedlevel == false)
             {
-                lifetimer -= timerreduction;
-
+                
                 totalenemies += 2;
 
                 blockstoWin += 3;//Fungerar

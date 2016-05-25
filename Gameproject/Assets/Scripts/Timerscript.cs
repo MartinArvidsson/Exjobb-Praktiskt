@@ -10,7 +10,6 @@ public class Timerscript : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
         timerText = GetComponent<Text>();
-        BoardManager.lifetimer = 180;
 	}
 	
 	// Update is called once per frame

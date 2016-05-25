@@ -79,6 +79,8 @@ public class GameLostscript : MonoBehaviour {
         showGUI = false;
         SceneManager.LoadScene(0);
         BoardManager.remainingtries = 3;
+        BoardManager.lifetimer = 180;
+        GameManager.instance.level = 1;
         UpdateDisableMovement(false);
 
     }
