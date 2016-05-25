@@ -47,6 +47,7 @@ public class GameWonscript : MonoBehaviour {
 
     IEnumerator NextLevel()
     {
+        UpdateDisableMovement(true);
         nextlevel = GameManager.instance.level + 1;
         showGUI = true;
         yield return new WaitForSeconds(3);
@@ -55,5 +56,11 @@ public class GameWonscript : MonoBehaviour {
         GameManager.instance.level++;
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
+        UpdateDisableMovement(false);
+    }
+
+    void UpdateDisableMovement(bool movementStatus)
+    {
+        BoardManager.disableMovement = movementStatus;
     }
 }

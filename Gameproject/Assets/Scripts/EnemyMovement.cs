@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Completed;
-
-public class EnemyMovement : MonoBehaviour {
+using Observer;
+public class EnemyMovement : MonoBehaviour
+{
+    //private PlayerObserver Iobserver;
     private float horizontalmovement, verticalmovement;
     public float minspeed,maxspeed,constantspeed;
     private Rigidbody rb;
     private bool invunerable;
     public Transform originalObject, reflectedObject;
+    
     // Use this for initialization
     void Start () {
+        //Iobserver = new PlayerAnimations();
         rb = GetComponent<Rigidbody>();
         horizontalmovement = Random.Range(minspeed, maxspeed);
         verticalmovement = Random.Range(minspeed, maxspeed);
@@ -36,6 +40,7 @@ public class EnemyMovement : MonoBehaviour {
 
             if(!invunerable)
             {
+                //Iobserver.PlayerDamaged();
                 BoardManager.playerlifes -= 1;
                 invunerable = true;
                 yield return new WaitForSeconds(2);

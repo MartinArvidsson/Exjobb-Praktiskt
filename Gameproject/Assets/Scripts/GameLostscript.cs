@@ -57,6 +57,7 @@ public class GameLostscript : MonoBehaviour {
 
     IEnumerator RestartLevel()
     {
+        UpdateDisableMovement(true);
         gameovertext.text = "You lost, restarting level: " + GameManager.instance.level;
         showGUI = true;
         yield return new WaitForSeconds(3);
@@ -65,14 +66,25 @@ public class GameLostscript : MonoBehaviour {
         Scene scene = SceneManager.GetActiveScene();
         GameManager.instance.restartedLevel = true;
         SceneManager.LoadScene(scene.name);
+        UpdateDisableMovement(false);
+
     }
 
     IEnumerator Gameisover()
     {
+        UpdateDisableMovement(true);
         gameovertext.text = "Game over. Exiting to Main Menu..";
         showGUI = true;
         yield return new WaitForSeconds(3);
         showGUI = false;
         SceneManager.LoadScene(0);
+        BoardManager.remainingtries = 3;
+        UpdateDisableMovement(false);
+
+    }
+
+    void UpdateDisableMovement(bool movementStatus)
+    {
+        BoardManager.disableMovement = movementStatus;
     }
 }

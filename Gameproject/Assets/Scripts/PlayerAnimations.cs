@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-public class PlayerAnimations : MonoBehaviour {
+using Observer;
+public class PlayerAnimations : MonoBehaviour, PlayerObserver {
     public Animator animator;
+    private bool damaged = false;
     // Use this for initialization
     void Start () {
-	
 	}
-    void AnimationControl()
+    void AnimationControl(bool damaged)
     {
         if (Input.GetKey("space"))
         {
@@ -18,7 +18,7 @@ public class PlayerAnimations : MonoBehaviour {
             animator.SetBool("Angry", false);
         }
 
-        if (Input.GetKey("mouse 0"))
+        if(damaged == true)
         {
             animator.SetBool("Scared", true);
         }
@@ -27,10 +27,18 @@ public class PlayerAnimations : MonoBehaviour {
             animator.SetBool("Scared", false);
         }
     }
+
+    public void PlayerDamaged() //WIP Getting an UnknownReferenceException. Leaving animation for future works. Leaving the framework for the observer still in the code
+    {
+        //Debug.Log(animator);
+        //animator.SetBool("Idle_Dmg", true);
+        //AnimationControl(damaged = true);
+        //damaged = false;
+    }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        AnimationControl();
+        AnimationControl(damaged);
     }
 }

@@ -9,6 +9,7 @@ namespace Completed
 
     public class BoardManager : MonoBehaviour
     {
+        public static bool disableMovement;
         public static int blockstoWin = 20;
         public static float lifetimer = 180;                                     //Time before the player dies, this will get divided by the current level
                                                                         //to allow increasing difficulty.

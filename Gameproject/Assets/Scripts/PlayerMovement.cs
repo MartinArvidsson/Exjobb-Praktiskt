@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Completed;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class PlayerMovement : MonoBehaviour {
     public float rotationDamping = 20f;
@@ -26,7 +27,10 @@ public class PlayerMovement : MonoBehaviour {
     // Update is called once per frame
     void Update () 
     {
-        UpdateMovement();
+        if (BoardManager.disableMovement == false)
+        {
+            UpdateMovement();
+        }
         BuildWall();
         if(savedPositions.Count != 0)
         {
@@ -87,12 +91,7 @@ public class PlayerMovement : MonoBehaviour {
     float UpdateMovement()
     {
         BoardManager.lifetimer -= Time.deltaTime;
-
-        //float x = Input.GetAxisRaw("Horizontal");
-        //float z = Input.GetAxisRaw("Vertical");
-
-        //Vector3 inputVec = new Vector3(x, 0, z);
-        Vector3 inputVec = new Vector3(Input.acceleration.x, 0, -Input.acceleration.z);
+        Vector3 inputVec = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));
         inputVec *= speed;
 
         controller.Move((inputVec + Vector3.up * -gravity + new Vector3(0, 0, 0)) * Time.deltaTime);
