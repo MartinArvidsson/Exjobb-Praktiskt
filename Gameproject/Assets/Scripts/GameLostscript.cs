@@ -80,6 +80,8 @@ public class GameLostscript : MonoBehaviour {
         SceneManager.LoadScene(0);
         BoardManager.remainingtries = 3;
         BoardManager.lifetimer = 180;
+        BoardManager.blockstoWin = 20;
+        BoardManager.totalenemies = 2;
         GameManager.instance.level = 1;
         UpdateDisableMovement(false);
 

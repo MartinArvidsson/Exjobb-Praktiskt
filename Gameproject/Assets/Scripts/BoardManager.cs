@@ -10,8 +10,10 @@ namespace Completed
     public class BoardManager : MonoBehaviour
     {
         public static bool disableMovement;
-        public static int blockstoWin = 20;
-        public static float lifetimer = 180;                                     //Time before the player dies, this will get divided by the current level
+        public static int totalenemies;                            //Number of total enemies, will get multiplied by current level to
+                                                                        //Allow increasing difficulty.
+        public static int blockstoWin = 17;
+        public static float lifetimer = 180;                            //Time before the player dies, this will get divided by the current level
                                                                         //to allow increasing difficulty.
 
         public int columns = 9;                                         //Number of columns in our game board.
@@ -21,28 +23,31 @@ namespace Completed
         public GameObject player;                                       //The player gameobject. in this case the droid.
         public GameObject[] floorTiles;                                 //Array of floor prefabs.
         public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
-        public GameObject[] enemies;                                    //Array of different enemies.
+        public GameObject[] enemyPrefabs;                                    //Array of different enemies.
         public GameObject[] inviswall;                                  //Invis wall to prevent player from running to far
+        public GameObject BuildingWall;
         public static int remainingtries = 3;                           //Tries before the game quits.
         public static int playerlifes = 3;                              //Playerlives is always equals to 3 when the game starts. by calling on it in different
                                                                         //scripts we can decrease it's value when different triggers happends.
                                                                         //When the lifetotal is = 0 the game will end.
-
-        public static int totalenemies;                                        //Number of total enemies, will get multiplied by current level to
-                                                                        //Allow increasing difficulty.
         
         private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
         private Transform enemiesHolder;                                //A variable to store a reference to the transform of our Enemies object.
         private Transform buildingblocksHolder;                         //A variable to store a reference to the transform of our Buoldingblocks object.
         private List<Vector3> gridPositions = new List<Vector3>();      //A list of possible locations to place tiles.
-        private GameObject instance;                                    //The gameobject we use for instantiating new object and placing them as childs to
                                                                         //Their respective holders
+
+        private GameObject[,] cells;
+        private List<GameObject> path;
+        private GameObject[] enemies;
 
         //Clears our list gridPositions and prepares it to generate a new board.
         void InitialiseList()
         {
             //Clear our list gridPositions.
             gridPositions.Clear();
+
+            cells = new GameObject[columns, rows];
 
             //Loop through x axis (columns).
             for (int x = 1; x < columns - 1; x++)
@@ -63,6 +68,7 @@ namespace Completed
             //Instantiate Board and set boardHolder to its transform.
             boardHolder = new GameObject("Board").transform;
             buildingblocksHolder = new GameObject("BuildingBlocks").transform;
+            GameObject instance;
             //Loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles.
             for (int x = -2; x < columns + 1; x++)
             {
@@ -76,19 +82,18 @@ namespace Completed
                     if (x == -2 || x == columns || y == -2 || y == rows)
                     {
                         toInstantiate = inviswall[Random.Range(0, inviswall.Length)];
-                        instance =
-                        Instantiate(toInstantiate, new Vector3(x, 2.5f, y), Quaternion.identity) as GameObject;
+                        instance = Instantiate(toInstantiate, new Vector3(x, 2.5f, y), Quaternion.identity) as GameObject;
                     }
                     else if (x == -1 || x == columns - 1 || y == -1 || y == rows -1)
                     {
                         toInstantiate = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
-                        instance =
-                        Instantiate(toInstantiate, new Vector3(x, 1.5f, y), Quaternion.identity) as GameObject;
+                        instance = Instantiate(toInstantiate, new Vector3(x, 0.5f, y), Quaternion.identity) as GameObject;
+                        instance.transform.SetParent(boardHolder);
+                        instance = Instantiate(toInstantiate, new Vector3(x, 1.5f, y), Quaternion.identity) as GameObject;
                     }
                     else
                     {
-                        instance =
-                        Instantiate(toInstantiate, new Vector3(x, 0.5f, y), Quaternion.identity) as GameObject;
+                        instance = Instantiate(toInstantiate, new Vector3(x, 0.5f, y), Quaternion.identity) as GameObject;
                     }
                         
 
@@ -122,7 +127,7 @@ namespace Completed
                 Vector3 randompos = randomplacement();
                 GameObject chosenememy = enemiesarray[Random.Range(0, enemiesarray.Length)];
 
-                instance = Instantiate(chosenememy, randompos, Quaternion.identity) as GameObject;
+                var instance = Instantiate(chosenememy, randompos, Quaternion.identity) as GameObject;
 
                 instance.transform.SetParent(enemiesHolder);
             }
@@ -154,10 +159,109 @@ namespace Completed
             //Reset our list of gridpositions.
             InitialiseList();
 
-            randomEnemies(enemies, totalenemies);
+            randomEnemies(enemyPrefabs, totalenemies);
 
             spawnplayer();
         }
+
+        public void StartTrace()
+        {
+            path = new List<GameObject>();
+        }
+
+        public void Trace(int x, int y)
+        {
+            if (!path.Find(obj => obj.transform.position.x == x && obj.transform.localPosition.z == y))
+            {
+                var instance = Instantiate(BuildingWall, new Vector3(x, 1.5f, y), Quaternion.identity) as GameObject;
+                path.Add(instance);
+                instance.transform.SetParent(buildingblocksHolder);
+            }
+        }
+
+        public void StopTrace()
+        {
+            enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            if (path.Count > 1)
+            {
+                foreach(GameObject gameObject in path)
+                {
+                    var instance = Instantiate(outerWallTiles[0], gameObject.transform.position, Quaternion.identity) as GameObject;
+                    instance.transform.SetParent(buildingblocksHolder);
+                    Destroy(gameObject);
+                    int x = (int)(instance.transform.position.x + 0.5f);
+                    int y = (int)(instance.transform.position.z + 0.5f);
+                    cells[x, y] = instance;
+
+                    /*
+                     * TODO: Fill
+                    bool fail = false;
+                    bool[,] blocks = Fill(x, y, out fail);
+                    Debug.Log(blocks);
+                    Debug.Log(fail);
+                    */
+                }
+            }
+        }
+
+        private struct celldata
+        {
+            public GameObject cell;
+            public int x;
+            public int y;
+            public celldata(GameObject cell, int x, int y)
+            {
+                this.x = x;
+                this.y = y;
+                this.cell = cell;
+            }
+        }
+
+        public bool[,] Fill(int x, int y, out bool abort, bool[,] done = null)
+        {
+            abort = false;
+            if (done == null)
+            {
+                done = new bool[cells.GetLength(0), cells.GetLength(1)];
+            }
+
+            foreach (GameObject enemy in enemies)
+            {
+                if ( (int)enemy.transform.position.x == x && (int)enemy.transform.position.y == y)
+                {
+                    abort = true;
+                    return done;
+                }
+            }
+
+            done[x, y] = true;
+
+            var outline = new celldata[4] {
+                new celldata(getCell(x, y - 1), x, y - 1),
+                new celldata(getCell(x, y + 1), x, y + 1),
+                new celldata(getCell(x - 1, y), x - 1, y),
+                new celldata(getCell(x + 1, y), x + 1, y),
+            };
+
+            foreach (celldata data in outline)
+            {
+                if (data.cell == null || done[data.x, data.y])
+                    continue;
+                Fill(data.x, data.y, out abort, done);
+                if (abort)
+                    return done;
+            }
+
+            return done;
+        }
+
+        private GameObject getCell(int x, int y)
+        {
+            if (x >= 0 && y >= 0 && x < cells.GetLength(0) && y < cells.GetLength(1))
+                return cells[x, y];
+            return null;
+        }
+
     }
 }
 
