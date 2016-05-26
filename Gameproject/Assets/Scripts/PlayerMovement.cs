@@ -13,7 +13,6 @@ public class PlayerMovement : MonoBehaviour {
     public GameObject Outerwall;
     public GameObject BuildingWall;
 
-    private GameObject BuildingBlocks;
     private GameObject Board;
     private GameObject instance;
     private List<Transform> savedPositions = new List<Transform>();
@@ -40,14 +39,13 @@ public class PlayerMovement : MonoBehaviour {
 
     void BuildWall()
     {
-        BuildingBlocks = GameObject.Find("BuildingBlocks");
+
         RaycastHit hit;
         Ray groundray = new Ray(new Vector3(transform.position.x, 1.5f, transform.position.z), transform.forward);
         Debug.DrawRay(new Vector3(transform.position.x, 1.5f, transform.position.z), transform.forward * raylength);
         var res = Physics.Raycast(groundray, out hit, raylength);
         if(res && hit.transform.tag == "Outer Wall")
         {
-            
             if (isTracing && hit.distance < 0.2f)
             {
                 isTracing = false;

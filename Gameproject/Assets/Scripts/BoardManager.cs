@@ -40,6 +40,7 @@ namespace Completed
         private GameObject[,] cells;
         private List<GameObject> path;
         private GameObject[] enemies;
+        private List<Vector3> outerWallPositions = new List<Vector3>();
 
         //Clears our list gridPositions and prepares it to generate a new board.
         void InitialiseList()
@@ -90,6 +91,7 @@ namespace Completed
                         instance = Instantiate(toInstantiate, new Vector3(x, 0.5f, y), Quaternion.identity) as GameObject;
                         instance.transform.SetParent(boardHolder);
                         instance = Instantiate(toInstantiate, new Vector3(x, 1.5f, y), Quaternion.identity) as GameObject;
+                        outerWallPositions.Add(new Vector3(x, 1.5f, y));
                     }
                     else
                     {
@@ -167,27 +169,33 @@ namespace Completed
         public void StartTrace()
         {
             path = new List<GameObject>();
+            
         }
 
         public void Trace(int x, int y)
         {
             if (!path.Find(obj => obj.transform.position.x == x && obj.transform.localPosition.z == y))
             {
-                var instance = Instantiate(BuildingWall, new Vector3(x, 1.5f, y), Quaternion.identity) as GameObject;
-                path.Add(instance);
-                instance.transform.SetParent(buildingblocksHolder);
+                var newPlacement = new Vector3(x,1.5f,y);
+                if (!outerWallPositions.Contains(newPlacement))
+                {
+                    var instance = Instantiate(BuildingWall, newPlacement, Quaternion.identity) as GameObject;
+                    path.Add(instance);
+                    instance.transform.SetParent(buildingblocksHolder);
+                }
             }
         }
 
         public void StopTrace()
         {
             enemies = GameObject.FindGameObjectsWithTag("Enemy");
-            if (path.Count > 1)
+            if (path.Count > 0)
             {
                 foreach(GameObject gameObject in path)
                 {
                     var instance = Instantiate(outerWallTiles[0], gameObject.transform.position, Quaternion.identity) as GameObject;
-                    instance.transform.SetParent(buildingblocksHolder);
+                    outerWallPositions.Add(gameObject.transform.position);
+                    instance.transform.SetParent(boardHolder);
                     Destroy(gameObject);
                     int x = (int)(instance.transform.position.x + 0.5f);
                     int y = (int)(instance.transform.position.z + 0.5f);
