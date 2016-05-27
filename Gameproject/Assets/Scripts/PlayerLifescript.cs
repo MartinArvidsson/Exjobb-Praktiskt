@@ -1,23 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using Completed;
+using Board;
 
-public class PlayerLifescript : MonoBehaviour {
-
-    Text playerlifes;
-
-
-    // Use this for initialization
-    void Awake()
+namespace UIText
+{
+    public class PlayerLifescript : MonoBehaviour
     {
-        playerlifes = GetComponent<Text>();
-        BoardManager.playerlifes = 3;
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        playerlifes.text = "Remaining lifes : " + BoardManager.playerlifes;
+        Text playerlifes;
+
+
+        // Use this for initialization
+        void Awake()
+        {
+            playerlifes = GetComponent<Text>();
+            BoardManager.playerLifes = 3;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            playerlifes.text = "Remaining lifes : " + BoardManager.playerLifes;
+        }
     }
+    
 }

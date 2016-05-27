@@ -3,44 +3,43 @@ using System;
 using System.Collections.Generic;       //Allows us to use Lists.
 using Random = UnityEngine.Random;      //Tells Random to use the Unity Engine random number generator.
 
-namespace Completed
+namespace Board
 
 {
 
     public class BoardManager : MonoBehaviour
     {
+        public static List<Vector3> outerWallPositions = new List<Vector3>();
         public static bool disableMovement;
-        public static int totalenemies;                            //Number of total enemies, will get multiplied by current level to
+        public static int totalEnemies;                                 //Number of total enemies, will get multiplied by current level to
                                                                         //Allow increasing difficulty.
-        public static int blockstoWin = 17;
-        public static float lifetimer = 180;                            //Time before the player dies, this will get divided by the current level
+        public static int blocksToWin = 17;
+        public static float lifeTimer = 180;                            //Time before the player dies, this will get divided by the current level
                                                                         //to allow increasing difficulty.
 
         public int columns = 9;                                         //Number of columns in our game board.
         public int rows = 9;                                            //Number of rows in our game board.
 
-        private int timerreduction;
         public GameObject player;                                       //The player gameobject. in this case the droid.
         public GameObject[] floorTiles;                                 //Array of floor prefabs.
         public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
         public GameObject[] enemyPrefabs;                                    //Array of different enemies.
         public GameObject[] inviswall;                                  //Invis wall to prevent player from running to far
         public GameObject BuildingWall;
-        public static int remainingtries = 3;                           //Tries before the game quits.
-        public static int playerlifes = 3;                              //Playerlives is always equals to 3 when the game starts. by calling on it in different
+        public static int remainingTries = 3;                           //Tries before the game quits.
+        public static int playerLifes = 3;                              //Playerlives is always equals to 3 when the game starts. by calling on it in different
                                                                         //scripts we can decrease it's value when different triggers happends.
                                                                         //When the lifetotal is = 0 the game will end.
         
         private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
         private Transform enemiesHolder;                                //A variable to store a reference to the transform of our Enemies object.
-        private Transform buildingblocksHolder;                         //A variable to store a reference to the transform of our Buoldingblocks object.
+        private Transform buildingBlocksHolder;                         //A variable to store a reference to the transform of our Buoldingblocks object.
         private List<Vector3> gridPositions = new List<Vector3>();      //A list of possible locations to place tiles.
                                                                         //Their respective holders
 
         private GameObject[,] cells;
         private List<GameObject> path;
         private GameObject[] enemies;
-        private List<Vector3> outerWallPositions = new List<Vector3>();
 
         //Clears our list gridPositions and prepares it to generate a new board.
         void InitialiseList()
@@ -68,7 +67,7 @@ namespace Completed
         {
             //Instantiate Board and set boardHolder to its transform.
             boardHolder = new GameObject("Board").transform;
-            buildingblocksHolder = new GameObject("BuildingBlocks").transform;
+            buildingBlocksHolder = new GameObject("BuildingBlocks").transform;
             GameObject instance;
             //Loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles.
             for (int x = -2; x < columns + 1; x++)
@@ -105,7 +104,7 @@ namespace Completed
             }
         }
 
-        Vector3 randomplacement()
+        Vector3 RandomPlacement()
         {
             int randomIndex = Random.Range(0, gridPositions.Count);
 
@@ -120,13 +119,13 @@ namespace Completed
             return randomPosition;
         }
 
-        void randomEnemies(GameObject[] enemiesarray, int totalenemies)
+        void RandomEnemies(GameObject[] enemiesarray, int totalEnemies)
         {
             enemiesHolder = new GameObject("Enemies").transform;
 
-            for (int i = 0; i < totalenemies; i++)
+            for (int i = 0; i < totalEnemies; i++)
             {
-                Vector3 randompos = randomplacement();
+                Vector3 randompos = RandomPlacement();
                 GameObject chosenememy = enemiesarray[Random.Range(0, enemiesarray.Length)];
 
                 var instance = Instantiate(chosenememy, randompos, Quaternion.identity) as GameObject;
@@ -136,23 +135,21 @@ namespace Completed
 
         }
 
-        void spawnplayer()
+        void SpawnPlayer()
         {
             Vector3 playerpos = new Vector3(4f,0.4f,-1f);
             Instantiate(player, playerpos, Quaternion.identity);
         }
 
-
         //SetupScene initializes our level and calls the previous functions to lay out the game board
         public void SetupScene(int level,bool restartedlevel)
         {
-            //timerreduction -= level * 2;
             if(restartedlevel == false)
             {
                 
-                totalenemies += 2;
+                totalEnemies += 2;
 
-                blockstoWin += 3;//Fungerar
+                blocksToWin += 3;//Fungerar
             }
 
             //Creates the outer walls and floor.
@@ -161,9 +158,9 @@ namespace Completed
             //Reset our list of gridpositions.
             InitialiseList();
 
-            randomEnemies(enemyPrefabs, totalenemies);
+            RandomEnemies(enemyPrefabs, totalEnemies);
 
-            spawnplayer();
+            SpawnPlayer();
         }
 
         public void StartTrace()
@@ -181,7 +178,7 @@ namespace Completed
                 {
                     var instance = Instantiate(BuildingWall, newPlacement, Quaternion.identity) as GameObject;
                     path.Add(instance);
-                    instance.transform.SetParent(buildingblocksHolder);
+                    instance.transform.SetParent(buildingBlocksHolder);
                 }
             }
         }
@@ -201,6 +198,8 @@ namespace Completed
                     int y = (int)(instance.transform.position.z + 0.5f);
                     cells[x, y] = instance;
 
+                    //TODO: Count score with Scorescript.score++;
+                    
                     /*
                      * TODO: Fill
                     bool fail = false;

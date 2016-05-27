@@ -1,22 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using Completed;
+using Board;
 
-public class Scorescript : MonoBehaviour {
+namespace UIText
+{
+    public class Scorescript : MonoBehaviour
+    {
 
-    public static int score;
-    Text blockcounter;
+        public static int score;
+        Text blockCounter;
+        // Use this for initialization
+        void Awake()
+        {
+            blockCounter = GetComponent<Text>();
+            score = 0;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            blockCounter.text = "Currently placed blocks : " + score + " of " + BoardManager.blocksToWin;
+        }
+    }
     
-
-	// Use this for initialization
-	void Awake () {
-        blockcounter = GetComponent<Text>();
-        score = 0;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        blockcounter.text = "Currently placed blocks : " + score +" of "+ BoardManager.blockstoWin;
-	}
 }

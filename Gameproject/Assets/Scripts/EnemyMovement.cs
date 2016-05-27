@@ -1,51 +1,56 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Completed;
+using Board;
 using Observer;
-public class EnemyMovement : MonoBehaviour
+
+namespace Enemy
 {
-    //private PlayerObserver Iobserver;
-    private float horizontalmovement, verticalmovement;
-    public float minspeed,maxspeed,constantspeed;
-    private Rigidbody rb;
-    private bool invunerable;
-    public Transform originalObject, reflectedObject;
-    
-    // Use this for initialization
-    void Start () {
-        //Iobserver = new PlayerAnimations();
-        rb = GetComponent<Rigidbody>();
-        horizontalmovement = Random.Range(minspeed, maxspeed);
-        verticalmovement = Random.Range(minspeed, maxspeed);
-        rb.velocity = new Vector3(horizontalmovement, 0.0f, verticalmovement);
-    }
-	
-	// Update is called once per frame
-	void FixedUpdate () {
-        rb.velocity = constantspeed * (rb.velocity.normalized);
-    }
-
-    IEnumerator OnCollisionEnter(Collision collision)
+    public class EnemyMovement : MonoBehaviour
     {
-        if (collision.collider.tag == "Outer Wall")
-        {
-            //Debug.Log("hit");
-            Vector3 myCollisionNormal = collision.contacts[0].normal;
-            rb.velocity = Vector3.Reflect(rb.velocity, myCollisionNormal);
-        }
-        if(collision.collider.tag =="BuildingWall")
-        {
-            Vector3 myCollisionNormal = collision.contacts[0].normal;
-            rb.velocity = Vector3.Reflect(rb.velocity, myCollisionNormal);
+        //private PlayerObserver Iobserver;
+        //public Transform originalObject, reflectedObject;
+        public float minSpeed, maxSpeed, constantSpeed;
+        private float horizontalMovement, verticalMovement;
+        private Rigidbody rb;
+        private bool invunerable;
 
-            if(!invunerable)
+        // Use this for initialization
+        void Start()
+        {
+            //Iobserver = new PlayerAnimations();
+            rb = GetComponent<Rigidbody>();
+            horizontalMovement = Random.Range(minSpeed, maxSpeed);
+            verticalMovement = Random.Range(minSpeed, maxSpeed);
+            rb.velocity = new Vector3(horizontalMovement, 0.0f, verticalMovement);
+        }
+
+        // Update is called once per frame
+        void FixedUpdate()
+        {
+            rb.velocity = constantSpeed * (rb.velocity.normalized);
+        }
+
+        IEnumerator OnCollisionEnter(Collision collision)
+        {
+            if (collision.collider.tag == "Outer Wall")
             {
-                //Iobserver.PlayerDamaged();
-                BoardManager.playerlifes -= 1;
-                invunerable = true;
-                yield return new WaitForSeconds(2);
-                invunerable = false;
+                Vector3 myCollisionNormal = collision.contacts[0].normal;
+                rb.velocity = Vector3.Reflect(rb.velocity, myCollisionNormal);
+            }
+            if (collision.collider.tag == "BuildingWall")
+            {
+                Vector3 myCollisionNormal = collision.contacts[0].normal;
+                rb.velocity = Vector3.Reflect(rb.velocity, myCollisionNormal);
+
+                if (!invunerable)
+                {
+                    //Iobserver.PlayerDamaged();
+                    BoardManager.playerLifes -= 1;
+                    invunerable = true;
+                    yield return new WaitForSeconds(2);
+                    invunerable = false;
+                }
             }
         }
-    }
+    } 
 }

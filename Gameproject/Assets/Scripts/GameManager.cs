@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Board;
 
-namespace Completed
+namespace GameSetup
 {
     using System.Collections.Generic;       //Allows us to use Lists. 
 

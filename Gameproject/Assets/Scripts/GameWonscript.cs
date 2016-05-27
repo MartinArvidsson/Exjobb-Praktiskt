@@ -1,66 +1,72 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using Completed;
 using UnityEngine.SceneManagement;
+using GameSetup;
+using Board;
 
-public class GameWonscript : MonoBehaviour {
-
-    Text gamewontext;
-    public GameObject leveltransition;
-    bool showGUI = false;
-    private int nextlevel;
-    // Use this for initialization
-    void Awake()
+namespace UIText
+{
+    public class GameWonscript : MonoBehaviour
     {
-        gamewontext = GetComponent<Text>();
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Scorescript.score >= BoardManager.blockstoWin)
+        Text gameWonText;
+        public GameObject levelTransition;
+        bool showGUI = false;
+        private int nextLevel;
+        // Use this for initialization
+        void Awake()
         {
-            PlayerWon();
+            gameWonText = GetComponent<Text>();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (Scorescript.score >= BoardManager.blocksToWin)
+            {
+                PlayerWon();
+            }
+        }
+
+        void PlayerWon()
+        {
+            StartCoroutine("NextLevel");
+        }
+
+        void OnGUI()
+        {
+            if (showGUI == true)
+            {
+                gameWonText.enabled = true;
+                gameWonText.text = "Congratulations! You won! Loading level: " + nextLevel;
+                levelTransition.SetActive(true);
+            }
+            else
+            {
+                levelTransition.SetActive(false);
+                gameWonText.enabled = false;
+            }
+        }
+
+        IEnumerator NextLevel()
+        {
+            UpdateDisableMovement(true);
+            nextLevel = GameManager.instance.level + 1;
+            showGUI = true;
+            yield return new WaitForSeconds(3);
+            showGUI = false;
+            GameManager.instance.restartedLevel = false;
+            GameManager.instance.level++;
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(scene.name);
+            UpdateDisableMovement(false);
+        }
+
+        void UpdateDisableMovement(bool movementStatus)
+        {
+            BoardManager.disableMovement = movementStatus;
         }
     }
-
-    void PlayerWon()
-    {
-        StartCoroutine("NextLevel");
-    }
-
-    void OnGUI()
-    {
-        if (showGUI == true)
-        {
-            gamewontext.enabled = true;
-            gamewontext.text = "Congratulations! You won! Loading level: " + nextlevel;
-            leveltransition.SetActive(true);
-        }
-        else
-        {
-            leveltransition.SetActive(false);
-            gamewontext.enabled = false;
-        }
-    }
-
-    IEnumerator NextLevel()
-    {
-        UpdateDisableMovement(true);
-        nextlevel = GameManager.instance.level + 1;
-        showGUI = true;
-        yield return new WaitForSeconds(3);
-        showGUI = false;
-        GameManager.instance.restartedLevel = false;
-        GameManager.instance.level++;
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
-        UpdateDisableMovement(false);
-    }
-
-    void UpdateDisableMovement(bool movementStatus)
-    {
-        BoardManager.disableMovement = movementStatus;
-    }
+    
 }
