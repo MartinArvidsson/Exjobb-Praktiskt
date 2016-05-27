@@ -9,7 +9,7 @@ namespace UIText
 {
     public class GameWonscript : MonoBehaviour
     {
-
+        public BoardManager boardManager;
         Text gameWonText;
         public GameObject levelTransition;
         bool showGUI = false;
@@ -18,6 +18,7 @@ namespace UIText
         void Awake()
         {
             gameWonText = GetComponent<Text>();
+            boardManager = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<BoardManager>();
         }
 
         // Update is called once per frame
@@ -52,12 +53,13 @@ namespace UIText
         IEnumerator NextLevel()
         {
             UpdateDisableMovement(true);
-            nextLevel = GameManager.instance.level + 1;
+            nextLevel = GameManager.GameManagerInstance.level + 1;
             showGUI = true;
             yield return new WaitForSeconds(3);
             showGUI = false;
-            GameManager.instance.restartedLevel = false;
-            GameManager.instance.level++;
+            boardManager.Reset();
+            GameManager.GameManagerInstance.restartedLevel = false;
+            GameManager.GameManagerInstance.level++;
             Scene scene = SceneManager.GetActiveScene();
             SceneManager.LoadScene(scene.name);
             UpdateDisableMovement(false);

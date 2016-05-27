@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;       //Allows us to use Lists.
+using System.Linq;
 using Random = UnityEngine.Random;      //Tells Random to use the Unity Engine random number generator.
-
+using UIText;
 namespace Board
 
 {
 
     public class BoardManager : MonoBehaviour
     {
-        public static List<Vector3> outerWallPositions = new List<Vector3>();
         public static bool disableMovement;
         public static int totalEnemies;                                 //Number of total enemies, will get multiplied by current level to
                                                                         //Allow increasing difficulty.
@@ -27,6 +27,9 @@ namespace Board
         public GameObject[] inviswall;                                  //Invis wall to prevent player from running to far
         public GameObject BuildingWall;
         public static int remainingTries = 3;                           //Tries before the game quits.
+
+       
+
         public static int playerLifes = 3;                              //Playerlives is always equals to 3 when the game starts. by calling on it in different
                                                                         //scripts we can decrease it's value when different triggers happends.
                                                                         //When the lifetotal is = 0 the game will end.
@@ -37,9 +40,8 @@ namespace Board
         private List<Vector3> gridPositions = new List<Vector3>();      //A list of possible locations to place tiles.
                                                                         //Their respective holders
 
-        private GameObject[,] cells;
+        private int[,] cells;
         private List<GameObject> path;
-        private GameObject[] enemies;
 
         //Clears our list gridPositions and prepares it to generate a new board.
         void InitialiseList()
@@ -47,56 +49,60 @@ namespace Board
             //Clear our list gridPositions.
             gridPositions.Clear();
 
-            cells = new GameObject[columns, rows];
 
             //Loop through x axis (columns).
-            for (int x = 1; x < columns - 1; x++)
+            for (int x = 1; x < columns; x++)
             {
                 //Within each column, loop through y axis (rows).
-                for (int y = 1; y < rows - 1; y++)
+                for (int y = 1; y < rows; y++)
                 {
                     //At each index add a new Vector3 to our list with the x and y coordinates of that position. Will be used for placing enemies.
-                    gridPositions.Add(new Vector3(x, 1f,y));
+                    gridPositions.Add(new Vector3(x, 1f, y));
                 }
             }
+        }
+
+        public void Reset()
+        {
+            cells = new int[columns, rows];
         }
 
 
         //Sets up the outer walls and floor (background) of the game board.
         void BoardSetup()
         {
+            cells = new int[columns, rows];
             //Instantiate Board and set boardHolder to its transform.
             boardHolder = new GameObject("Board").transform;
             buildingBlocksHolder = new GameObject("BuildingBlocks").transform;
             GameObject instance;
             //Loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles.
-            for (int x = -2; x < columns + 1; x++)
+            for (int x = -2; x <= columns + 1; x++)
             {
                 //Loop along y axis, starting from -1 to place floor or outerwall tiles.
-                for (int y = -2; y < rows + 1; y++)
+                for (int y = -2; y <= rows + 1; y++)
                 {
                     //Choose a random tile from our array of floor tile prefabs and prepare to instantiate it.
                     GameObject toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
 
                     //Check if we current position is at board edge, if so choose a random outer wall prefab from our array of outer wall tiles.
-                    if (x == -2 || x == columns || y == -2 || y == rows)
+                    if (x == -2 || x == columns + 1 || y == -2 || y == rows + 1)
                     {
                         toInstantiate = inviswall[Random.Range(0, inviswall.Length)];
                         instance = Instantiate(toInstantiate, new Vector3(x, 2.5f, y), Quaternion.identity) as GameObject;
                     }
-                    else if (x == -1 || x == columns - 1 || y == -1 || y == rows -1)
+                    else if (x == -1 || x == columns || y == -1 || y == rows)
                     {
                         toInstantiate = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
                         instance = Instantiate(toInstantiate, new Vector3(x, 0.5f, y), Quaternion.identity) as GameObject;
                         instance.transform.SetParent(boardHolder);
                         instance = Instantiate(toInstantiate, new Vector3(x, 1.5f, y), Quaternion.identity) as GameObject;
-                        outerWallPositions.Add(new Vector3(x, 1.5f, y));
                     }
                     else
                     {
                         instance = Instantiate(toInstantiate, new Vector3(x, 0.5f, y), Quaternion.identity) as GameObject;
                     }
-                        
+                    
 
                     //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
                     instance.transform.SetParent(boardHolder);
@@ -174,102 +180,80 @@ namespace Board
             if (!path.Find(obj => obj.transform.position.x == x && obj.transform.localPosition.z == y))
             {
                 var newPlacement = new Vector3(x,1.5f,y);
-                if (!outerWallPositions.Contains(newPlacement))
+
+                if (x >= 0 && y >= 0 && x < cells.GetLength(0) && y < cells.GetLength(1) && cells[x, y] == 0)
                 {
                     var instance = Instantiate(BuildingWall, newPlacement, Quaternion.identity) as GameObject;
                     path.Add(instance);
                     instance.transform.SetParent(buildingBlocksHolder);
+                    int cellX = (int)(instance.transform.position.x + 0.5f);
+                    int cellY = (int)(instance.transform.position.z + 0.5f);
+                    cells[x, y] = 1;
                 }
             }
         }
 
         public void StopTrace()
         {
-            enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            var enemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
+            
             if (path.Count > 0)
             {
-                foreach(GameObject gameObject in path)
+                Filler filler = new Filler(cells);
+                foreach (GameObject gameObject in path)
                 {
                     var instance = Instantiate(outerWallTiles[0], gameObject.transform.position, Quaternion.identity) as GameObject;
-                    outerWallPositions.Add(gameObject.transform.position);
                     instance.transform.SetParent(boardHolder);
                     Destroy(gameObject);
                     int x = (int)(instance.transform.position.x + 0.5f);
                     int y = (int)(instance.transform.position.z + 0.5f);
-                    cells[x, y] = instance;
+                    Scorescript.score++;
+                    cells[x, y] = 2;
 
-                    //TODO: Count score with Scorescript.score++;
-                    
-                    /*
-                     * TODO: Fill
-                    bool fail = false;
-                    bool[,] blocks = Fill(x, y, out fail);
-                    Debug.Log(blocks);
-                    Debug.Log(fail);
-                    */
+                    filler.Fill(x, y);
                 }
-            }
-        }
 
-        private struct celldata
-        {
-            public GameObject cell;
-            public int x;
-            public int y;
-            public celldata(GameObject cell, int x, int y)
-            {
-                this.x = x;
-                this.y = y;
-                this.cell = cell;
-            }
-        }
-
-        public bool[,] Fill(int x, int y, out bool abort, bool[,] done = null)
-        {
-            abort = false;
-            if (done == null)
-            {
-                done = new bool[cells.GetLength(0), cells.GetLength(1)];
-            }
-
-            foreach (GameObject enemy in enemies)
-            {
-                if ( (int)enemy.transform.position.x == x && (int)enemy.transform.position.y == y)
+                var groups = filler.GetGroups();
+                
+                foreach (var group in groups)
                 {
-                    abort = true;
-                    return done;
+                    bool fill = true;
+                    Transform container = (new GameObject("group")).transform;
+                    int[,] tempCells = (int[,])cells.Clone();
+                    int score = 0;
+                    foreach (var cell in group)
+                    {
+                        if (enemies.Find( enemy => (int)(enemy.transform.position.x + 0.5f) == cell.x && (int)(enemy.transform.position.z + 0.5f) == cell.y) != null)
+                        {
+                            fill = false;
+                            break;
+                        }
+                        
+                        var instance = Instantiate(outerWallTiles[0], new Vector3(cell.x, 1.5f, cell.y) , Quaternion.identity) as GameObject;
+                        instance.transform.SetParent(container);
+                        score++;
+                        tempCells[cell.x, cell.y] = 2;
+                    }
+
+                    if (fill)
+                    {
+                        container.SetParent(boardHolder);
+                        cells = tempCells;
+                        Scorescript.score += score;
+                    }
+                    else
+                    {
+                        Destroy(container.gameObject);
+                    }
                 }
             }
-
-            done[x, y] = true;
-
-            var outline = new celldata[4] {
-                new celldata(getCell(x, y - 1), x, y - 1),
-                new celldata(getCell(x, y + 1), x, y + 1),
-                new celldata(getCell(x - 1, y), x - 1, y),
-                new celldata(getCell(x + 1, y), x + 1, y),
-            };
-
-            foreach (celldata data in outline)
-            {
-                if (data.cell == null || done[data.x, data.y])
-                    continue;
-                Fill(data.x, data.y, out abort, done);
-                if (abort)
-                    return done;
-            }
-
-            return done;
         }
 
-        private GameObject getCell(int x, int y)
+        public int GetCell(int x, int y)
         {
-            if (x >= 0 && y >= 0 && x < cells.GetLength(0) && y < cells.GetLength(1))
+            if (x >= 0 && y >= 0 && x < columns && y < rows)
                 return cells[x, y];
-            return null;
+            return -1;
         }
-
     }
 }
-
-

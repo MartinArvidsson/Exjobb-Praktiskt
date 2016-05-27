@@ -43,34 +43,34 @@ namespace Player
 
         void BuildWall()
         {
+            int x = (int)(transform.position.x + Mathf.Sign(transform.position.x) * 0.5f);
+            int y = (int)(transform.position.z + Mathf.Sign(transform.position.z) * 0.5f);
 
-            RaycastHit hit;
-            Ray groundray = new Ray(new Vector3(transform.position.x, 1.5f, transform.position.z), transform.forward);
-            Debug.DrawRay(new Vector3(transform.position.x, 1.5f, transform.position.z), transform.forward * rayLength);
-            var res = Physics.Raycast(groundray, out hit, rayLength);
-            if (res && hit.transform.tag == "Outer Wall")
+            int hit = boardManager.GetCell(x, y);
+
+            if (hit == 2 || hit == -1)
             {
-                if (isTracing && hit.distance < 0.2f)
+                if (isTracing)
                 {
                     isTracing = false;
                     boardManager.StopTrace();
                 }
             }
-            else
+            else if (hit == 0)
             {
-                if (isTracing)
+                if (!isTracing)
                 {
-                    int x = (int)(transform.position.x + Mathf.Sign(transform.position.x) * 0.5f);
-                    int y = (int)(transform.position.z + Mathf.Sign(transform.position.z) * 0.5f);
+                    isTracing = true;
+                    boardManager.StartTrace();
                     boardManager.Trace(x, y);
                 }
                 else
                 {
-                    isTracing = true;
-                    boardManager.StartTrace();
+                    boardManager.Trace(x, y);
                 }
             }
         }
+        
 
         float UpdateMovement()
         {

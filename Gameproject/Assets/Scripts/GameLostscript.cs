@@ -14,10 +14,13 @@ namespace UIText
         public GameObject leveltransition;
         bool showGUI = false;
 
+        public BoardManager boardManager;
+
         // Use this for initialization
         void Awake()
         {
             gameOverText = GetComponent<Text>();
+            boardManager = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<BoardManager>();
         }
 
         // Update is called once per frame
@@ -61,14 +64,15 @@ namespace UIText
         IEnumerator RestartLevel()
         {
             UpdateDisableMovement(true);
-            gameOverText.text = "You lost, restarting level: " + GameManager.instance.level;
+            gameOverText.text = "You lost, restarting level: " + GameManager.GameManagerInstance.level;
             showGUI = true;
             yield return new WaitForSeconds(3);
             showGUI = false;
-            BoardManager.outerWallPositions.Clear();
+
+            boardManager.Reset();
             BoardManager.remainingTries -= 1;
             Scene scene = SceneManager.GetActiveScene();
-            GameManager.instance.restartedLevel = true;
+            GameManager.GameManagerInstance.restartedLevel = true;
             SceneManager.LoadScene(scene.name);
             UpdateDisableMovement(false);
 
@@ -81,13 +85,13 @@ namespace UIText
             showGUI = true;
             yield return new WaitForSeconds(3);
             showGUI = false;
+            boardManager.Reset();
             SceneManager.LoadScene(0);
-            BoardManager.outerWallPositions.Clear();
             BoardManager.remainingTries = 3;
             BoardManager.lifeTimer = 180;
             BoardManager.blocksToWin = 20;
             BoardManager.totalEnemies = 2;
-            GameManager.instance.level = 1;
+            GameManager.GameManagerInstance.level = 1;
             UpdateDisableMovement(false);
 
         }
