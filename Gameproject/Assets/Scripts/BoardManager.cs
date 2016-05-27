@@ -13,7 +13,7 @@ namespace Board
         public static bool disableMovement;
         public static int totalEnemies;                                 //Number of total enemies, will get multiplied by current level to
                                                                         //Allow increasing difficulty.
-        public static int blocksToWin = 17;
+        public static int blocksToWin = 27;
         public static float lifeTimer = 180;                            //Time before the player dies, this will get divided by the current level
                                                                         //to allow increasing difficulty.
 
@@ -65,6 +65,15 @@ namespace Board
         public void Reset()
         {
             cells = new int[columns, rows];
+        }
+
+        public void TotalReset()
+        {
+            cells = new int[columns, rows];
+            remainingTries = 3;
+            lifeTimer = 180;
+            blocksToWin = 27;
+            totalEnemies = 2;
         }
 
 

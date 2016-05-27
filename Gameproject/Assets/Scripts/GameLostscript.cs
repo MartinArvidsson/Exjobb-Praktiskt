@@ -11,9 +11,8 @@ namespace UIText
     {
 
         Text gameOverText;
+        private bool showGUI = false;
         public GameObject leveltransition;
-        bool showGUI = false;
-
         public BoardManager boardManager;
 
         // Use this for initialization
@@ -71,8 +70,8 @@ namespace UIText
 
             boardManager.Reset();
             BoardManager.remainingTries -= 1;
-            Scene scene = SceneManager.GetActiveScene();
             GameManager.GameManagerInstance.restartedLevel = true;
+            Scene scene = SceneManager.GetActiveScene();
             SceneManager.LoadScene(scene.name);
             UpdateDisableMovement(false);
 
@@ -85,12 +84,8 @@ namespace UIText
             showGUI = true;
             yield return new WaitForSeconds(3);
             showGUI = false;
-            boardManager.Reset();
+            boardManager.TotalReset();
             SceneManager.LoadScene(0);
-            BoardManager.remainingTries = 3;
-            BoardManager.lifeTimer = 180;
-            BoardManager.blocksToWin = 20;
-            BoardManager.totalEnemies = 2;
             GameManager.GameManagerInstance.level = 1;
             UpdateDisableMovement(false);
 

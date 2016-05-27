@@ -9,21 +9,25 @@ namespace UIText
     {
 
         public Button startGame;
-        public GameObject howToButton;
         public Button howTo;
         public Button backtoMenu;
-        public GameObject howToPlay;
+
+        private GameObject howToPlayObject;
+        //private Canvas backButtonObject;
+        
 
         // Use this for initialization
         void Start()
         {
             startGame = startGame.GetComponent<Button>();
             howTo = howTo.GetComponent<Button>();
-            howToButton = GameObject.Find("GoBack");
-            howToButton.SetActive(false);
             backtoMenu = backtoMenu.GetComponent<Button>();
-            howToPlay = GameObject.Find("howToplay");
-            howToPlay.SetActive(false);
+
+            howToPlayObject = GameObject.FindGameObjectWithTag("HowToPlayScreen");
+            howToPlayObject.SetActive(false);
+
+            //backButtonObject = GameObject.Find("GoBack");
+            //backButtonObject.SetActive(false);
         }
 
         public void StartLevel()
@@ -33,14 +37,14 @@ namespace UIText
 
         public void ShowHowTo()
         {
-            howToPlay.SetActive(true);
-            howToButton.SetActive(true);
+            //backButtonObject.SetActive(true);
+            howToPlayObject.SetActive(true);
         }
 
         public void DisableHowTo()
         {
-            howToPlay.SetActive(false);
-            howToButton.SetActive(false);
+            //backButtonObject.SetActive(false);
+            howToPlayObject.SetActive(false);
         }
     }
     
