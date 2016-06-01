@@ -7,7 +7,7 @@ namespace UIText
 {
     public class PlayerLifescript : MonoBehaviour
     {
-
+        //Simple script to show the current lifes of the player. Presents the Boardmananger playerlifes varible that get's reduced when the player takes a hit from the enemy
         Text playerlifes;
 
 

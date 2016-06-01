@@ -8,6 +8,7 @@ namespace GameSetup
 
     public class GameManager : MonoBehaviour
     {
+        //Created partially with "Unity guide - Rougelike"
         public bool restartedLevel = false;
         public static GameManager GameManagerInstance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
         private BoardManager boardScript;                       //Store a reference to our BoardManager which will set up the level.

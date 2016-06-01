@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Board
-{
+{   //Rasmus helped me a lot in figuring out how to apply the fill algorithm function
     public class Filler
     {
         private int[,] cells;
@@ -14,7 +14,7 @@ namespace Board
 
         private int latestGroupID = 10;
 
-        public Filler(int[,] cells)
+        public Filler(int[,] cells) //Creates a new filler with the positions to check and later fill
         {
             width = cells.GetLength(0);
             height = cells.GetLength(1);
@@ -23,7 +23,7 @@ namespace Board
             groups = new List<List<Celldata>>();
         }
 
-        public struct Celldata
+        public struct Celldata //Structure of a cell, what group and what position it has. Group is used to determine if it's in enemy area or not
         {
             public int x;
             public int y;
@@ -36,17 +36,17 @@ namespace Board
             }
         }
 
-        public List<List<Celldata>> GetGroups()
+        public List<List<Celldata>> GetGroups() //Gets the groups
         {
             return groups;
         }
 
-        public void Fill(int startX, int startY)
+        public void Fill(int startX, int startY) //Start the fill function, that will check the cell
         {
             fill(startX, startY);
         }
 
-        private void fill(int cellX, int cellY, int groupID = 1, List<Celldata> group = null)
+        private void fill(int cellX, int cellY, int groupID = 1, List<Celldata> group = null) //Checks the cell, assigns a group ID, Checks nearby cells and assigns ID:s
         {
 
             if (cellY < 0 || cellX < 0 || cellY >= height || cellX >= width)
@@ -83,7 +83,7 @@ namespace Board
             }
         }
 
-        private void fillCell(int x, int y, int groupID, List<Celldata> group)
+        private void fillCell(int x, int y, int groupID, List<Celldata> group) //assigns the cell to a group ID
         {
             List<Celldata> cellGroup = group;
             if (group == null)
@@ -102,7 +102,7 @@ namespace Board
             fill(x, y, id, cellGroup);
         }
 
-        private int getCell(int x, int y)
+        private int getCell(int x, int y) //Returns cell position
         {
             if (x >= 0 && y >= 0 && x < width && y < height)
                 return cells[x, y];

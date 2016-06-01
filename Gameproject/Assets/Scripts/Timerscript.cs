@@ -17,7 +17,8 @@ namespace UIText
         }
 
         // Update is called once per frame
-        void Update()
+        void Update() //Shows BoardManager.lifeTimer, the variable that gets reduced in realtime, the player has three minues to play the game before it automaticly quits
+                      //to the mainmenu.
         {
             timerText.text = string.Format("Time remaining: {0:N0}", BoardManager.lifeTimer);
         }

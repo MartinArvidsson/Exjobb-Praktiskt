@@ -2,12 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Random = UnityEngine.Random;      //Tells Random to use the Unity Engine random number generator.
+using Random = UnityEngine.Random;
 using UIText;
 namespace Board
 
 {
-
+    //Followed Unity "Rougelike" tutorial for generating a board
     public class BoardManager : MonoBehaviour
     {
         public static bool disableMovement;
@@ -184,7 +184,7 @@ namespace Board
             
         }
 
-        public void Trace(int x, int y)
+        public void Trace(int x, int y)//Tracks playerposition and places blocks when the player walks
         {
             if (!path.Find(obj => obj.transform.position.x == x && obj.transform.localPosition.z == y))
             {
@@ -202,8 +202,9 @@ namespace Board
             }
         }
 
-        public void StopTrace()
-        {
+        public void StopTrace()//When the player reaches another outer wall we stop tracking the position
+        {                      //And call fill to fill if no enemies are in the closed in area, if so we fill the area with walltiles
+                               //Rasmus helped me a lot in figuring out how to apply the fill algorithm function
             var enemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
             
             if (path.Count > 0)
@@ -224,7 +225,7 @@ namespace Board
 
                 var groups = filler.GetGroups();
                 
-                foreach (var group in groups)
+                foreach (var group in groups) //For each group created by the fill function, loop the positions and if an enemy is found, break because the group shall not be filled
                 {
                     bool fill = true;
                     Transform container = (new GameObject("group")).transform;
@@ -258,7 +259,7 @@ namespace Board
             }
         }
 
-        public int GetCell(int x, int y)
+        public int GetCell(int x, int y)//Gets the tile the player is standing on
         {
             if (x >= 0 && y >= 0 && x < columns && y < rows)
                 return cells[x, y];

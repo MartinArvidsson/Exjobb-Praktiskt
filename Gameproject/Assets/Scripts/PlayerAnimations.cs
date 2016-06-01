@@ -4,6 +4,7 @@ using Observer;
 
 namespace Player
 {
+    //Prefabscript for the playerobject, Will play animations when the player takes damage. Observer NYI.
     public class PlayerAnimations : MonoBehaviour, PlayerObserver
     {
         public Animator animator;

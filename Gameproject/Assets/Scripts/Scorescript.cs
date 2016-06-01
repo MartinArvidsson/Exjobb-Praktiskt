@@ -18,8 +18,8 @@ namespace UIText
         }
 
         // Update is called once per frame
-        void Update()
-        {
+        void Update() //Shows number of placed blocks by showing the BoardManager.blocksToWin variable that gets increased as the player places more and more tiles
+        {   
             blockCounter.text = "Currently placed blocks : " + score + " of " + BoardManager.blocksToWin;
         }
     }

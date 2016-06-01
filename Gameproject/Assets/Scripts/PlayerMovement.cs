@@ -26,13 +26,13 @@ namespace Player
         CharacterController controller;
 
         // Use this for initialization
-        void Start()
+        void Start()//Find joystick and boardmanager
         {
             controller = (CharacterController)GetComponent(typeof(CharacterController));
             boardManager = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<BoardManager>();
         }
         // Update is called once per frame
-        void Update()
+        void Update()//If the players movement isn't disabled call updateMovement(); Always call Buildwall
         {
             if (BoardManager.disableMovement == false)
             {
@@ -41,8 +41,8 @@ namespace Player
             BuildWall();
         }
 
-        void BuildWall()
-        {
+        void BuildWall() //Get's marked cells from BoardManager, depending on what "hit" is we do different things, continue tracing or stop and finish the wall
+        {                //Rasmus helped a lot here.
             int x = (int)(transform.position.x + Mathf.Sign(transform.position.x) * 0.5f);
             int y = (int)(transform.position.z + Mathf.Sign(transform.position.z) * 0.5f);
 
@@ -72,7 +72,7 @@ namespace Player
         }
         
 
-        float UpdateMovement()
+        float UpdateMovement() //Moves the player based on the position of the joystick
         {
             BoardManager.lifeTimer -= Time.deltaTime;
             Vector3 inputVec = new Vector3(CrossPlatformInputManager.GetAxisRaw("Horizontal"), 0, CrossPlatformInputManager.GetAxisRaw("Vertical"));

@@ -16,14 +16,14 @@ namespace UIText
         public BoardManager boardManager;
 
         // Use this for initialization
-        void Awake()
+        void Awake() //Finds the text where we will place the text when a game is lost
         {
             gameOverText = GetComponent<Text>();
             boardManager = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<BoardManager>();
         }
 
         // Update is called once per frame
-        void Update()
+        void Update() //Waits for the player to loose the game
         {
             if (BoardManager.playerLifes <= 0 || BoardManager.lifeTimer <= 0)
             {
@@ -35,12 +35,12 @@ namespace UIText
             }
         }
 
-        void GameOver()
+        void GameOver() //If game is completely over start gameisover
         {
             StartCoroutine("Gameisover");
         }
 
-        void PlayerLost()
+        void PlayerLost() //if the player just lost his/her lifes
         {
             StartCoroutine("RestartLevel");
         }
@@ -60,7 +60,7 @@ namespace UIText
             }
         }
 
-        IEnumerator RestartLevel()
+        IEnumerator RestartLevel() //Shows gameover before restarting the level with reseted values
         {
             UpdateDisableMovement(true);
             gameOverText.text = "You lost, restarting level: " + GameManager.GameManagerInstance.level;
@@ -77,7 +77,7 @@ namespace UIText
 
         }
 
-        IEnumerator Gameisover()
+        IEnumerator Gameisover() //Shows gameover before quitting to main menu, reseting values in the process
         {
             UpdateDisableMovement(true);
             gameOverText.text = "Game over. Exiting to Main Menu..";

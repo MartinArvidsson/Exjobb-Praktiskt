@@ -15,14 +15,14 @@ namespace UIText
         bool showGUI = false;
         private int nextLevel;
         // Use this for initialization
-        void Awake()
+        void Awake() //Finds the textobject
         {
             gameWonText = GetComponent<Text>();
             boardManager = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<BoardManager>();
         }
 
         // Update is called once per frame
-        void Update()
+        void Update() //Waits for the player to win
         {
             if (Scorescript.score >= BoardManager.blocksToWin)
             {
@@ -50,7 +50,7 @@ namespace UIText
             }
         }
 
-        IEnumerator NextLevel()
+        IEnumerator NextLevel() //Disables movement before moving on to next level, showing a transitionscreen between
         {
             UpdateDisableMovement(true);
             nextLevel = GameManager.GameManagerInstance.level + 1;

@@ -16,7 +16,7 @@ namespace Enemy
         // Use this for initialization
         void Start()
         {
-            //Iobserver = new PlayerAnimations();
+            //Iobserver = new PlayerAnimations(); Observer NYI, Work in progress
             rb = GetComponent<Rigidbody>();
             horizontalMovement = Random.Range(minSpeed, maxSpeed);
             verticalMovement = Random.Range(minSpeed, maxSpeed);
@@ -29,7 +29,7 @@ namespace Enemy
             rb.velocity = constantSpeed * (rb.velocity.normalized);
         }
 
-        IEnumerator OnCollisionEnter(Collision collision)
+        IEnumerator OnCollisionEnter(Collision collision)//Checks what the enemy collides with, and depending on the tag we do the specified thing
         {
             if (collision.collider.tag == "Outer Wall")
             {

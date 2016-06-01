@@ -17,7 +17,7 @@ namespace UIText
         
 
         // Use this for initialization
-        void Start()
+        void Start()//Finds the objects in the scene to use for buttons
         {
             startGame = startGame.GetComponent<Button>();
             howTo = howTo.GetComponent<Button>();
@@ -30,18 +30,18 @@ namespace UIText
             //backButtonObject.SetActive(false);
         }
 
-        public void StartLevel()
+        public void StartLevel()//Starts the game
         {
             SceneManager.LoadScene("Mainscene");
         }
 
-        public void ShowHowTo()
+        public void ShowHowTo()//Shows howtoplay canvas when pressed
         {
             //backButtonObject.SetActive(true);
             howToPlayObject.SetActive(true);
         }
 
-        public void DisableHowTo()
+        public void DisableHowTo()//Disables the howtoplay canvas when pressed
         {
             //backButtonObject.SetActive(false);
             howToPlayObject.SetActive(false);
