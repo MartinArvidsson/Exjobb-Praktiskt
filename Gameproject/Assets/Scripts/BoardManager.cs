@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System;
-using System.Collections.Generic;       //Allows us to use Lists.
+using System.Collections.Generic;
 using System.Linq;
 using Random = UnityEngine.Random;      //Tells Random to use the Unity Engine random number generator.
 using UIText;
@@ -13,7 +13,7 @@ namespace Board
         public static bool disableMovement;
         public static int totalEnemies;                                 //Number of total enemies, will get multiplied by current level to
                                                                         //Allow increasing difficulty.
-        public static int blocksToWin = 27;
+        public static int blocksToWin = 27;                             //Blocks to place before winning the game
         public static float lifeTimer = 180;                            //Time before the player dies, this will get divided by the current level
                                                                         //to allow increasing difficulty.
 
@@ -62,12 +62,12 @@ namespace Board
             }
         }
 
-        public void Reset()
+        public void Reset()//Reset the tiles marked as completed on death or win
         {
             cells = new int[columns, rows];
         }
 
-        public void TotalReset()
+        public void TotalReset()//Reset the game when the player returns to startmenu
         {
             cells = new int[columns, rows];
             remainingTries = 3;
@@ -94,20 +94,20 @@ namespace Board
                     //Choose a random tile from our array of floor tile prefabs and prepare to instantiate it.
                     GameObject toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
 
-                    //Check if we current position is at board edge, if so choose a random outer wall prefab from our array of outer wall tiles.
+                    //Places inviswall to prevent player from exiting the gamearea
                     if (x == -2 || x == columns + 1 || y == -2 || y == rows + 1)
                     {
                         toInstantiate = inviswall[Random.Range(0, inviswall.Length)];
                         instance = Instantiate(toInstantiate, new Vector3(x, 2.5f, y), Quaternion.identity) as GameObject;
                     }
-                    else if (x == -1 || x == columns || y == -1 || y == rows)
+                    else if (x == -1 || x == columns || y == -1 || y == rows)//Places the walltiles at the outer edge of board
                     {
                         toInstantiate = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
                         instance = Instantiate(toInstantiate, new Vector3(x, 0.5f, y), Quaternion.identity) as GameObject;
                         instance.transform.SetParent(boardHolder);
                         instance = Instantiate(toInstantiate, new Vector3(x, 1.5f, y), Quaternion.identity) as GameObject;
                     }
-                    else
+                    else//places floortile
                     {
                         instance = Instantiate(toInstantiate, new Vector3(x, 0.5f, y), Quaternion.identity) as GameObject;
                     }
@@ -138,7 +138,7 @@ namespace Board
         {
             enemiesHolder = new GameObject("Enemies").transform;
 
-            for (int i = 0; i < totalEnemies; i++)
+            for (int i = 0; i < totalEnemies; i++)//Places a random enemy at a random position
             {
                 Vector3 randompos = RandomPlacement();
                 GameObject chosenememy = enemiesarray[Random.Range(0, enemiesarray.Length)];
@@ -150,7 +150,7 @@ namespace Board
 
         }
 
-        void SpawnPlayer()
+        void SpawnPlayer()//Spawns the player
         {
             Vector3 playerpos = new Vector3(4f,0.4f,-1f);
             Instantiate(player, playerpos, Quaternion.identity);
@@ -173,12 +173,12 @@ namespace Board
             //Reset our list of gridpositions.
             InitialiseList();
 
-            RandomEnemies(enemyPrefabs, totalEnemies);
+            RandomEnemies(enemyPrefabs, totalEnemies);//Random enemy
 
-            SpawnPlayer();
+            SpawnPlayer();//Spawn player
         }
 
-        public void StartTrace()
+        public void StartTrace()//Starts tracking playerpositions
         {
             path = new List<GameObject>();
             

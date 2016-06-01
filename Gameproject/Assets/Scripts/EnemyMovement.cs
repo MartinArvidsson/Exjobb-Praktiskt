@@ -8,7 +8,6 @@ namespace Enemy
     public class EnemyMovement : MonoBehaviour
     {
         //private PlayerObserver Iobserver;
-        //public Transform originalObject, reflectedObject;
         public float minSpeed, maxSpeed, constantSpeed;
         private float horizontalMovement, verticalMovement;
         private Rigidbody rb;

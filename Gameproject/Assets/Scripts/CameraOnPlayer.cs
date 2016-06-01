@@ -17,9 +17,10 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
-            Vector3 playerInfo = player.transform.transform.position;
+            Vector3 playerInfo = player.transform.transform.position; //Players position
 
             mainCamera.transform.position = new Vector3(playerInfo.x, 12, playerInfo.z - cameraDistOffset);
+            //The camera follows the player based on the players position
         }
     }
     
