@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Board
-{   //Rasmus helped me a lot in figuring out how to apply the fill algorithm function
+{
     public class Filler
     {
         private int[,] cells;

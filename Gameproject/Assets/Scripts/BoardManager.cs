@@ -204,7 +204,6 @@ namespace Board
 
         public void StopTrace()//When the player reaches another outer wall we stop tracking the position
         {                      //And call fill to fill if no enemies are in the closed in area, if so we fill the area with walltiles
-                               //Rasmus helped me a lot in figuring out how to apply the fill algorithm function
             var enemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
             
             if (path.Count > 0)
